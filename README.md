@@ -1,6 +1,6 @@
 BibtexFixer 
 -----
-This command line tool for  removing duplicate entries from Bibtex file. 
+A command line tool for  removing duplicate entries from Bibtex file. 
 
 
 
