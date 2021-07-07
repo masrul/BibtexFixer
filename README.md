@@ -21,6 +21,7 @@ BibtexFixer [-h] -i  [-o]
 +  -i , --inputFile    Name of the input file
 +  -o , --outputFile   Name of the output file [Default: Clean.bib]
 +  -r , --ref-tex      If provided, then bibtex will contain relevent citations
+
 **Example:** 
 ```bash 
 BibtexFixer -i Examples/references.bib -o clean.bib 
