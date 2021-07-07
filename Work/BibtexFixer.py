@@ -1,22 +1,20 @@
 import sys
 from collections import deque, defaultdict
 import argparse
-import re
 
 sys.tracebacklimit = 0
 
 
 class BibtexFixer:
-    def __init__(self, bibFile, texFile):
-        if not bibFile.endswith(".bib"):
+    def __init__(self, file_name):
+        if not file_name.endswith(".bib"):
             raise RuntimeError("File must be *.bib type")
 
-        bibFH = open(bibFile, "r")
+        bibFH = open(file_name, "r")
         self.bibLines = bibFH.readlines()
         bibFH.close()
 
         self.Entries = defaultdict(dict)
-        self.texFile = texFile
 
     def tokenize(self, entryType):
 
@@ -81,37 +79,13 @@ class BibtexFixer:
             self.current_entry = self.Entries[entryType]
             self.tokenize("@" + entryType)
 
-    def getTexCitations(self):
-        lines = open(self.texFile, "r").readlines()
-        lineString = ""
-        for line in lines:
-            if line.strip().startswith("%"):
-                continue
-            else:
-                lineString += line
-
-        rx = re.compile(r"""(?<!\\)%.+|(\\(?:no)?citep?\{((?!\*)[^{}]+)\})""")
-        citations = [m.group(2) for m in rx.finditer(lineString) if m.group(2)]
-
-        self.texCitations = set()
-
-        for citation in citations:
-            for author in citation.split(","):
-                self.texCitations.add(author)
-
     def write(self, outFile):
 
         outFH = open(outFile, "w")
 
-        if self.texFile:
-            self.getTexCitations()
-
         for key1 in self.entryTypes:
             for key2 in self.Entries[key1].keys():
                 item = self.Entries[key1][key2]
-
-                if key1 != "STRING" and key2 not in self.texCitations:
-                    continue
 
                 outFH.write(item[0])
                 for line in item[1:]:
@@ -197,14 +171,6 @@ def main():
         help="Name of the output file [Default: Clean.bib]",
     )
 
-    ArgParser.add_argument(
-        "-r",
-        "--ref-tex",
-        metavar="",
-        type=str,
-        help="If provided, then bibtex will contain relevent citations",
-    )
-
     args = ArgParser.parse_args()
 
     inputFile = args.inputFile
@@ -213,12 +179,7 @@ def main():
     else:
         outputFile = "Clean.bib"
 
-    if args.ref_tex:
-        texFile = args.ref_tex
-    else:
-        texFile = None
-
-    fixer = BibtexFixer(inputFile, texFile)
+    fixer = BibtexFixer(inputFile)
     fixer.parseBib()
     fixer.write(outputFile)
 
