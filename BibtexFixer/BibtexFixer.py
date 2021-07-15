@@ -110,7 +110,7 @@ class BibtexFixer:
             for key2 in self.Entries[key1].keys():
                 item = self.Entries[key1][key2]
 
-                if key1 != "STRING" and key2 not in self.texCitations:
+                if self.texFile and key1 != "STRING" and key2 not in self.texCitations:
                     continue
 
                 outFH.write(item[0])
