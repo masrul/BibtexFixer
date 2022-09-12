@@ -7,9 +7,7 @@ A command line tool for  removing duplicate entries from Bibtex file.
 ### Installation
 ---
 ```bash 
-git clone https://github.com/masrul/BibtexFixer 
-cd BibtexFixer
-pip install . 
+pip install git+https://github.com/masrul/BibtexFixer.git
 ```
 
 ### Usage
